@@ -4,15 +4,39 @@
     {
       "name": "Parent 1",
       "children": [
-        { "name": "Grandparent A" },
-        { "name": "Grandparent B" }
+        {
+          "name": "Grandparent A",
+          "children": [
+            { "name": "Great-Grandparent A1" },
+            { "name": "Great-Grandparent A2" }
+          ]
+        },
+        {
+          "name": "Grandparent B",
+          "children": [
+            { "name": "Great-Grandparent B1" },
+            { "name": "Great-Grandparent B2" }
+          ]
+        }
       ]
     },
     {
       "name": "Parent 2",
       "children": [
-        { "name": "Grandparent C" },
-        { "name": "Grandparent D" }
+        {
+          "name": "Grandparent C",
+          "children": [
+            { "name": "Great-Grandparent C1" },
+            { "name": "Great-Grandparent C2" }
+          ]
+        },
+        {
+          "name": "Grandparent D",
+          "children": [
+            { "name": "Great-Grandparent D1" },
+            { "name": "Great-Grandparent D2" }
+          ]
+        }
       ]
     }
   ]
