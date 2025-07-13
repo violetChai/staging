@@ -63,11 +63,11 @@
   </header>
   <nav>
     <a href="index.html">🏠 Home</a>
-    <a href="https://github.com/violetChai/familytree/discussions" target="_blank">🗣️ Family Discussions</a>
-    <a href="bios/grandparent-a.md" target="_blank">📘 Grandparent A Bio</a>
+    <a href="https://github.com/YOUR_USERNAME/YOUR_REPO/discussions" target="_blank">🗣️ Family Discussions</a>
+    <a href="bios/grandparent-a.html" target="_blank">📘 Grandparent A Bio</a>
   </nav>
   <section class="about">
-    <p>Welcome to the Sinclair Family Tree. This is a collaborative digital archive celebrating the lives, stories, and memories of our extended family. Click on a name below to view their full biography or add your own memories in the discussion section.</p>
+    <p>Welcome to the Sinclair Family Tree. This is a collaborative digital archive celebrating the lives, stories, and memories of our extended family. Click on a person below to view their biography and share your own stories in the discussion space.</p>
   </section>
   <div class="tree-container" id="tree"></div>
 
@@ -77,7 +77,7 @@
       const response = await fetch('data/tree.json');
       const treeData = await response.json();
 
-      const margin = { top: 50, right: 100, bottom: 100, left: 100 },
+      const margin = { top: 20, right: 90, bottom: 30, left: 90 },
             width = window.innerWidth - margin.left - margin.right,
             height = window.innerHeight * 0.8;
 
@@ -98,7 +98,7 @@
         .attr('class', 'link')
         .attr('d', d3.linkVertical()
           .x(d => d.x)
-          .y(d => d.y)
+          .y(d => height - d.y) // invert Y direction to grow upward
         );
 
       const node = svg.selectAll('.node')
@@ -106,19 +106,20 @@
         .enter()
         .append('g')
         .attr('class', 'node')
-        .attr('transform', d => `translate(${d.x},${d.y})`)
+        .attr('transform', d => `translate(${d.x},${height - d.y})`)
         .style('cursor', 'pointer')
         .on('click', function(event, d) {
           const name = d.data.name;
-          const link = `bios/${name.toLowerCase().replace(/ /g, '-')}.md`;
+          const link = `bios/${name.toLowerCase().replace(/ /g, '-')}.html`;
           window.open(link, '_blank');
         });
 
-      node.append('circle')
-        .attr('r', 20)
-        .attr('fill', '#66bb6a')
-        .attr('stroke', '#2e7d32')
-        .attr('stroke-width', 2);
+      node.append('image')
+        .attr('xlink:href', d => `assets/photos/${d.data.photo || 'placeholder.jpg'}`)
+        .attr('x', -20)
+        .attr('y', -20)
+        .attr('width', 40)
+        .attr('height', 40);
 
       node.append('text')
         .attr('dy', 35)
