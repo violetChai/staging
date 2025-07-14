@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Violet's Family Tree</title>
+  <title>The Pinto Family Tree</title>
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
   <style>
     body {
@@ -51,10 +52,12 @@
     nav a:hover, nav .dropdown-btn:hover {
       text-decoration: underline;
     }
+    /* Dropdown container */
     .dropdown {
       position: relative;
       display: inline-block;
     }
+    /* Dropdown button */
     .dropdown-btn {
       padding: 0 8px;
       border: none;
@@ -63,7 +66,9 @@
       font-weight: bold;
       cursor: pointer;
       font-size: 1rem;
+      user-select: none;
     }
+    /* Dropdown content */
     .dropdown-content {
       display: none;
       position: absolute;
@@ -79,18 +84,25 @@
       display: block;
       padding: 10px;
       color: #2e7d32;
+      white-space: nowrap;
     }
     .dropdown-content a:hover {
       background-color: #c8e6c9;
+      text-decoration: none;
     }
+    /* Show dropdown on hover for desktop */
     @media (hover: hover) {
       .dropdown:hover .dropdown-content {
         display: block;
       }
     }
+    /* Show dropdown on focus for accessibility */
     .dropdown:focus-within .dropdown-content {
       display: block;
     }
+    /* Mobile-friendly: toggle dropdown on button click */
+    /* We'll use JS for this */
+
     .welcome-section {
       max-width: 1000px;
       margin: 20px auto;
@@ -104,6 +116,7 @@
       max-width: 320px;
       margin: 20px auto 0;
       text-align: left;
+      position: relative;
     }
     .search-box label {
       font-weight: bold;
@@ -116,6 +129,8 @@
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 4px;
+      padding-right: 12px;
+      box-sizing: border-box;
     }
     .search-results {
       max-width: 320px;
@@ -123,6 +138,7 @@
       color: #0096FF;
       font-weight: bold;
       cursor: pointer;
+      user-select: none;
     }
     .timeline-container {
       max-width: 1000px;
@@ -131,6 +147,12 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+    .timeline-container h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
     }
     .timeline-item {
       margin-bottom: 12px;
@@ -160,6 +182,7 @@
       font-size: 16px;
       border-radius: 4px;
       cursor: pointer;
+      user-select: none;
     }
     svg {
       display: block;
@@ -171,6 +194,7 @@
     .node text {
       font-size: 12px;
       fill: #2e7d32;
+      transition: all 0.3s ease;
     }
     .link {
       fill: none;
@@ -191,44 +215,46 @@
 
   <header>
     <img src="assets/photos/tree-icon.png" alt="Tree Icon" />
-    <h1>Violet's Family Tree</h1>
+    <h1>The Pinto Family Tree</h1>
   </header>
 
   <nav>
-    <a href="https://violetchai.github.io/familytree/index.html">Home</a>
-    <a href="https://github.com/violetChai/familytree/discussions" target="_blank">Discussions</a>
+    <a href="index.html" aria-label="Home page">Home</a>
+    <a href="discussion.html" target="_blank" aria-label="Discussion page">Discussion</a>
 
-    <div class="dropdown" tabindex="0">
-      <button class="dropdown-btn">Bios ▼</button>
-      <div class="dropdown-content" id="bios-menu">
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/grandparent-a" target="_blank">Grandparent A</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/grandparent-b" target="_blank">Grandparent B</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/parent-a" target="_blank">Parent A</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/parent-b" target="_blank">Parent B</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/sibling1" target="_blank">Sibling 1</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/sibling2" target="_blank">Sibling 2</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/spouse2" target="_blank">Spouse 2</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/child2" target="_blank">Child 2</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/sibling3" target="_blank">Sibling 3</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/spouse3" target="_blank">Spouse 3</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/child3" target="_blank">Child 3</a>
-        <a href="https://github.com/violetChai/familytree/blob/main/bios/you" target="_blank">You</a>
+    <div class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false">
+      <button class="dropdown-btn" aria-controls="bios-menu" aria-haspopup="true" aria-expanded="false">
+        Bios ▼
+      </button>
+      <div class="dropdown-content" id="bios-menu" role="menu" aria-label="Family Bios">
+        <a href="bios/grandparent-a.html" target="_blank" role="menuitem">Grandparent A</a>
+        <a href="bios/grandparent-b.html" target="_blank" role="menuitem">Grandparent B</a>
+        <a href="bios/parent-a.html" target="_blank" role="menuitem">Parent A</a>
+        <a href="bios/parent-b.html" target="_blank" role="menuitem">Parent B</a>
+        <a href="bios/sibling1.html" target="_blank" role="menuitem">Sibling 1</a>
+        <a href="bios/sibling2.html" target="_blank" role="menuitem">Sibling 2</a>
+        <a href="bios/spouse2.html" target="_blank" role="menuitem">Spouse 2</a>
+        <a href="bios/child2.html" target="_blank" role="menuitem">Child 2</a>
+        <a href="bios/sibling3.html" target="_blank" role="menuitem">Sibling 3</a>
+        <a href="bios/spouse3.html" target="_blank" role="menuitem">Spouse 3</a>
+        <a href="bios/child3.html" target="_blank" role="menuitem">Child 3</a>
+        <a href="bios/you.html" target="_blank" role="menuitem">You</a>
       </div>
     </div>
   </nav>
 
   <section class="welcome-section">
-    <h2>Welcome to Violet’s Family Tree</h2>
+    <h2>Welcome to the Pinto Family Tree</h2>
     <p>Explore your family history, bios, and timeline. Use the search box below to find family members quickly.</p>
   </section>
 
-  <section class="search-box">
+  <section class="search-box" aria-label="Search family members">
     <label for="searchInput">Search Family Members:</label>
     <input type="text" id="searchInput" placeholder="Enter name..." autocomplete="off" />
-    <div id="searchResults" class="search-results"></div>
+    <div id="searchResults" class="search-results" aria-live="polite" aria-atomic="true"></div>
   </section>
 
-  <section class="timeline-container">
+  <section class="timeline-container" aria-label="Timeline of Key Events">
     <h2>🕰️ Timeline of Key Events</h2>
     <div class="timeline-item">1932 – Alice Sinclair is born in Perth</div>
     <div class="timeline-item">1953 – Alice marries Edward Sinclair</div>
@@ -237,56 +263,80 @@
   </section>
 
   <div class="zoom-controls">
-    <button id="zoomInBtn">+</button>
-    <button id="zoomOutBtn">–</button>
-    <button id="resetZoomBtn">Reset</button>
+    <button id="zoomInBtn" aria-label="Zoom In">+</button>
+    <button id="zoomOutBtn" aria-label="Zoom Out">–</button>
+    <button id="resetZoomBtn" aria-label="Reset Zoom">Reset</button>
   </div>
 
-  <div id="tree" class="tree-container"></div>
+  <div id="tree" class="tree-container" aria-label="Family tree"></div>
 
   <footer>
-    &copy; <span id="year"></span> Violet's Family Tree Project
+    &copy; <span id="year"></span> The Pinto Family Tree Project
   </footer>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
+    // Set current year
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Toggle dropdown manually for mobile
+    // Dropdown toggle for mobile
     const dropdownBtn = document.querySelector('.dropdown-btn');
     const dropdownContent = document.querySelector('.dropdown-content');
     const dropdown = document.querySelector('.dropdown');
+
     dropdownBtn.addEventListener('click', e => {
       e.stopPropagation();
-      const isOpen = dropdownContent.style.display === 'block';
-      dropdownContent.style.display = isOpen ? 'none' : 'block';
+      const expanded = dropdownBtn.getAttribute('aria-expanded') === 'true';
+      dropdownBtn.setAttribute('aria-expanded', !expanded);
+      dropdownContent.style.display = expanded ? 'none' : 'block';
+      dropdown.setAttribute('aria-expanded', !expanded);
     });
+    // Close dropdown when clicking outside
     document.body.addEventListener('click', () => {
       dropdownContent.style.display = 'none';
+      dropdownBtn.setAttribute('aria-expanded', false);
+      dropdown.setAttribute('aria-expanded', false);
     });
 
+    // Family tree data structure
     const treeData = {
       "name": "Grandparents",
       "children": [
         {
           "name": "Grandparent A",
           "photo": "grandparent-a.jpg",
-          "bio": "https://github.com/violetChai/familytree/blob/main/bios/grandparent-a",
+          "bio": "bios/grandparent-a.html",
           "children": [
             {
               "name": "Parent A",
               "photo": "parent-a.jpg",
-              "bio": "https://github.com/violetChai/familytree/blob/main/bios/parent-a",
+              "bio": "bios/parent-a.html",
               "children": [
-                { "name": "You", "photo": "you.jpg", "bio": "https://github.com/violetChai/familytree/blob/main/bios/you" },
-                { "name": "Sibling 1", "photo": "sibling1.jpg", "bio": "https://github.com/violetChai/familytree/blob/main/bios/sibling1" },
+                {
+                  "name": "You",
+                  "photo": "you.jpg",
+                  "bio": "bios/you.html"
+                },
+                {
+                  "name": "Sibling 1",
+                  "photo": "sibling1.jpg",
+                  "bio": "bios/sibling1.html"
+                },
                 {
                   "name": "Sibling 2",
                   "photo": "sibling2.jpg",
-                  "bio": "https://github.com/violetChai/familytree/blob/main/bios/sibling2",
+                  "bio": "bios/sibling2.html",
                   "children": [
-                    { "name": "Spouse 2", "photo": "spouse2.jpg", "bio": "https://github.com/violetChai/familytree/blob/main/bios/spouse2" },
-                    { "name": "Child 2", "photo": "child2.jpg", "bio": "https://github.com/violetChai/familytree/blob/main/bios/child2" }
+                    {
+                      "name": "Spouse 2",
+                      "photo": "spouse2.jpg",
+                      "bio": "bios/spouse2.html"
+                    },
+                    {
+                      "name": "Child 2",
+                      "photo": "child2.jpg",
+                      "bio": "bios/child2.html"
+                    }
                   ]
                 }
               ]
@@ -296,20 +346,28 @@
         {
           "name": "Grandparent B",
           "photo": "grandparent-b.jpg",
-          "bio": "https://github.com/violetChai/familytree/blob/main/bios/grandparent-b",
+          "bio": "bios/grandparent-b.html",
           "children": [
             {
               "name": "Parent B",
               "photo": "parent-b.jpg",
-              "bio": "https://github.com/violetChai/familytree/blob/main/bios/parent-b",
+              "bio": "bios/parent-b.html",
               "children": [
                 {
                   "name": "Sibling 3",
                   "photo": "sibling3.jpg",
-                  "bio": "https://github.com/violetChai/familytree/blob/main/bios/sibling3",
+                  "bio": "bios/sibling3.html",
                   "children": [
-                    { "name": "Spouse 3", "photo": "spouse3.jpg", "bio": "https://github.com/violetChai/familytree/blob/main/bios/spouse3" },
-                    { "name": "Child 3", "photo": "child3.jpg", "bio": "https://github.com/violetChai/familytree/blob/main/bios/child3" }
+                    {
+                      "name": "Spouse 3",
+                      "photo": "spouse3.jpg",
+                      "bio": "bios/spouse3.html"
+                    },
+                    {
+                      "name": "Child 3",
+                      "photo": "child3.jpg",
+                      "bio": "bios/child3.html"
+                    }
                   ]
                 }
               ]
@@ -319,55 +377,79 @@
       ]
     };
 
+    // Setup D3 tree layout
     const margin = { top: 100, right: 90, bottom: 30, left: 90 },
-          width = 1200 - margin.left - margin.right,
-          height = 700 - margin.top - margin.bottom;
+      width = 1200 - margin.left - margin.right,
+      height = 700 - margin.top - margin.bottom;
 
-    const svg = d3.select("#tree").append("svg")
+    const svg = d3.select("#tree")
+      .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom);
 
-    const g = svg.append("g").attr("transform", `translate(${width / 2},${margin.top})`);
+    const g = svg.append("g")
+      .attr("transform", `translate(${width / 2},${margin.top})`);
 
     const root = d3.hierarchy(treeData);
     const treeLayout = d3.tree().size([width, height]);
     treeLayout(root);
 
-    g.selectAll(".link")
+    // Create links
+    const link = g.selectAll(".link")
       .data(root.links())
       .join("path")
       .attr("class", "link")
-      .attr("d", d3.linkVertical().x(d => d.x).y(d => d.y));
+      .attr("d", d3.linkVertical()
+        .x(d => d.x)
+        .y(d => d.y));
 
+    // Create nodes
     const node = g.selectAll(".node")
       .data(root.descendants())
       .join("g")
       .attr("class", "node")
       .attr("transform", d => `translate(${d.x},${d.y})`)
       .style("cursor", "pointer")
-      .on("click", d => { if (d.data.bio) window.open(d.data.bio, "_blank"); });
+      .on("click", d => {
+        if (d.data.bio) window.open(d.data.bio, "_blank");
+      });
 
     node.append("image")
-      .attr("xlink:href", d => d.data.photo ? `assets/photos/${d.data.photo}` : "assets/photos/placeholder.jpg")
+      .attr("xlink:href", d => d.data.photo ? "assets/photos/" + d.data.photo : "assets/photos/placeholder.jpg")
       .attr("x", -20)
       .attr("y", -20)
       .attr("width", 40)
-      .attr("height", 40);
+      .attr("height", 40)
+      .attr("alt", d => d.data.name)
+      .on("error", function () {
+        d3.select(this).attr("xlink:href", "assets/photos/placeholder.jpg");
+      });
 
     node.append("text")
       .attr("dy", 35)
       .attr("text-anchor", "middle")
       .text(d => d.data.name);
 
+    // Setup zoom behavior
     const zoom = d3.zoom()
       .scaleExtent([0.5, 2])
-      .on("zoom", e => g.attr("transform", e.transform));
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+      });
     svg.call(zoom).call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
 
-    document.getElementById("zoomInBtn").addEventListener("click", () => svg.transition().call(zoom.scaleBy, 1.2));
-    document.getElementById("zoomOutBtn").addEventListener("click", () => svg.transition().call(zoom.scaleBy, 0.8));
-    document.getElementById("resetZoomBtn").addEventListener("click", () => svg.transition().call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top)));
+    // Zoom buttons
+    document.getElementById("zoomInBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.scaleBy, 1.2);
+    });
+    document.getElementById("zoomOutBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.scaleBy, 0.8);
+    });
+    document.getElementById("resetZoomBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
+    });
 
+    // Search functionality
     const searchInput = document.getElementById("searchInput");
     const searchResults = document.getElementById("searchResults");
 
@@ -377,9 +459,9 @@
 
     function highlightNode(name) {
       node.filter(d => d.data.name.toLowerCase() === name.toLowerCase())
-          .select("text")
-          .attr("fill", "#0096FF")
-          .attr("font-weight", "bold");
+        .select("text")
+        .attr("fill", "#0096FF")
+        .attr("font-weight", "bold");
     }
 
     searchInput.addEventListener("input", () => {
@@ -389,6 +471,7 @@
       if (!query) return;
       const matches = root.descendants().filter(d => d.data.name.toLowerCase().includes(query));
       if (matches.length) {
+        // Build clickable results list
         matches.forEach(d => {
           const a = document.createElement("a");
           a.textContent = d.data.name;
@@ -396,6 +479,7 @@
           a.target = "_blank";
           a.style.display = "block";
           a.style.color = "#0096FF";
+          a.style.cursor = "pointer";
           a.style.textDecoration = "underline";
           a.addEventListener("click", e => e.stopPropagation());
           searchResults.appendChild(a);
