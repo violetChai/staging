@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sinclair Family Tree</title>
-  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
   <style>
     body {
       font-family: sans-serif;
@@ -38,12 +38,14 @@
       gap: 15px;
       justify-content: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
     }
     nav a, nav .dropdown {
       text-decoration: none;
       color: white;
       font-weight: bold;
       position: relative;
+      user-select: none;
     }
     .dropdown {
       cursor: pointer;
@@ -55,7 +57,8 @@
       left: 0;
       background-color: #ffffff;
       box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
+      z-index: 1000;
+      min-width: 160px;
     }
     .dropdown-content a {
       display: block;
@@ -67,45 +70,62 @@
     .dropdown-content:hover {
       display: block;
     }
-    .card {
-      background: #fff;
+    .welcome-section {
+      max-width: 1000px;
       margin: 20px auto;
+      background: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      max-width: 1000px;
+      text-align: center;
     }
-    .card h2 {
-      margin-top: 0;
+    .search-box {
+      max-width: 320px;
+      margin: 20px auto;
+      text-align: left;
     }
     .search-box label {
-      display: block;
       font-weight: bold;
       margin-bottom: 5px;
+      display: block;
     }
     .search-box input {
       padding: 8px;
       width: 100%;
-      max-width: 300px;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 4px;
       padding-right: 12px;
+      box-sizing: border-box;
+    }
+    .search-results {
+      max-width: 320px;
+      margin: 5px auto 20px;
+      color: #0096FF;
+      font-weight: bold;
+    }
+    .timeline-section {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .timeline-item {
-      background: white;
-      margin-bottom: 10px;
-      padding: 10px;
       border-left: 5px solid #66bb6a;
+      margin-bottom: 12px;
+      padding-left: 15px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
     .timeline-item img {
       width: 40px;
       height: 40px;
       object-fit: cover;
       border-radius: 50%;
+      flex-shrink: 0;
     }
     .tree-container {
       flex: 1;
@@ -114,27 +134,23 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-bottom: 30px;
     }
     .zoom-controls {
       display: flex;
       gap: 10px;
-      margin: 10px;
+      margin: 10px auto;
       justify-content: center;
     }
     .zoom-controls button {
       background: #2e7d32;
       color: white;
       border: none;
-      padding: 6px 12px;
+      padding: 6px 14px;
       font-size: 16px;
       border-radius: 4px;
       cursor: pointer;
-    }
-    .zoom-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
+      user-select: none;
     }
     svg {
       display: block;
@@ -164,8 +180,9 @@
   </style>
 </head>
 <body>
+
   <header>
-    <img src="assets/photos/tree-icon.png" alt="Tree Icon">
+    <img src="assets/photos/tree-icon.png" alt="Tree Icon" />
     <h1>The Sinclair Family Tree</h1>
   </header>
 
@@ -188,22 +205,276 @@
     </div>
   </nav>
 
+  <section class="welcome-section">
+    <h2>Welcome to the Sinclair Family Tree</h2>
+    <p>Explore your family history, bios, and timeline. Use the search box below to find family members quickly.</p>
+  </section>
+
+  <section class="search-box" aria-label="Search family members">
+    <label for="searchInput">Search Family Members:</label>
+    <input type="text" id="searchInput" placeholder="Enter name..." />
+    <div id="searchResults" class="search-results" aria-live="polite" aria-atomic="true"></div>
+  </section>
+
+  <section class="timeline-section" aria-label="Family timeline">
+    <h2>Family Timeline</h2>
+    <div id="timeline"></div>
+  </section>
+
   <div class="zoom-controls">
-    <button onclick="zoomIn()">+</button>
-    <button onclick="zoomOut()">–</button>
-    <button onclick="resetZoom()">Reset</button>
+    <button id="zoomInBtn" aria-label="Zoom In">+</button>
+    <button id="zoomOutBtn" aria-label="Zoom Out">–</button>
+    <button id="resetZoomBtn" aria-label="Reset Zoom">Reset</button>
   </div>
 
-  <div id="tree" class="tree-container"></div>
+  <div id="tree" class="tree-container" aria-label="Family tree"></div>
 
   <footer>
     &copy; <span id="year"></span> The Sinclair Family Tree Project
   </footer>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="js/tree-script.js"></script>
+  <script>
+    const treeData = {
+      "name": "Grandparents",
+      "children": [
+        {
+          "name": "Grandparent A",
+          "photo": "grandparent-a.jpg",
+          "bio": "Bios/grandparent-a.html",
+          "children": [
+            {
+              "name": "Parent A",
+              "photo": "parent-a.jpg",
+              "bio": "bios/parent-a.html",
+              "children": [
+                {
+                  "name": "You",
+                  "photo": "you.jpg",
+                  "bio": "bios/you.html"
+                },
+                {
+                  "name": "Sibling 1",
+                  "photo": "sibling1.jpg",
+                  "bio": "bios/sibling1.html"
+                },
+                {
+                  "name": "Sibling 2",
+                  "photo": "sibling2.jpg",
+                  "bio": "bios/sibling2.html",
+                  "children": [
+                    {
+                      "name": "Spouse 2",
+                      "photo": "spouse2.jpg",
+                      "bio": "bios/spouse2.html"
+                    },
+                    {
+                      "name": "Child 2",
+                      "photo": "child2.jpg",
+                      "bio": "bios/child2.html"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Grandparent B",
+          "photo": "grandparent-b.jpg",
+          "bio": "bios/grandparent-b.html",
+          "children": [
+            {
+              "name": "Parent B",
+              "photo": "parent-b.jpg",
+              "bio": "bios/parent-b.html",
+              "children": [
+                {
+                  "name": "Sibling 3",
+                  "photo": "sibling3.jpg",
+                  "bio": "bios/sibling3.html",
+                  "children": [
+                    {
+                      "name": "Spouse 3",
+                      "photo": "spouse3.jpg",
+                      "bio": "bios/spouse3.html"
+                    },
+                    {
+                      "name": "Child 3",
+                      "photo": "child3.jpg",
+                      "bio": "bios/child3.html"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    // Set current year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // D3 tree setup
+    const margin = { top: 100, right: 90, bottom: 30, left: 90 },
+      width = 1200 - margin.left - margin.right,
+      height = 700 - margin.top - margin.bottom;
+
+    const svg = d3
+      .select("#tree")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .call(
+        d3
+          .zoom()
+          .scaleExtent([0.5, 2])
+          .on("zoom", (event) => {
+            g.attr("transform", event.transform);
+          })
+      );
+
+    const g = svg
+      .append("g")
+      .attr("transform", `translate(${width / 2},${margin.top})`);
+
+    const root = d3.hierarchy(treeData);
+    const treeLayout = d3.tree().size([width, height]);
+    treeLayout(root);
+
+    // Create links
+    const link = g
+      .selectAll(".link")
+      .data(root.links())
+      .join("path")
+      .attr("class", "link")
+      .attr(
+        "d",
+        d3
+          .linkVertical()
+          .x((d) => d.x)
+          .y((d) => d.y)
+      );
+
+    // Create nodes
+    const node = g
+      .selectAll(".node")
+      .data(root.descendants())
+      .join("g")
+      .attr("class", "node")
+      .attr("transform", (d) => `translate(${d.x},${d.y})`);
+
+    node
+      .append("image")
+      .attr("xlink:href", (d) =>
+        d.data.photo ? "assets/photos/" + d.data.photo : "assets/photos/placeholder.jpg"
+      )
+      .attr("x", -20)
+      .attr("y", -20)
+      .attr("width", 40)
+      .attr("height", 40)
+      .attr("alt", (d) => d.data.name)
+      .on("error", function () {
+        d3.select(this).attr("xlink:href", "assets/photos/placeholder.jpg");
+      });
+
+    node
+      .append("text")
+      .attr("dy", 35)
+      .attr("text-anchor", "middle")
+      .text((d) => d.data.name);
+
+    // Search functionality
+    const searchInput = document.getElementById("searchInput");
+    const searchResults = document.getElementById("searchResults");
+
+    function clearHighlight() {
+      node.selectAll("text").attr("fill", "#2e7d32").attr("font-weight", "normal");
+    }
+
+    function highlightNode(name) {
+      node
+        .filter((d) => d.data.name.toLowerCase() === name.toLowerCase())
+        .select("text")
+        .attr("fill", "#0096FF")
+        .attr("font-weight", "bold");
+    }
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim().toLowerCase();
+      clearHighlight();
+      if (!query) {
+        searchResults.textContent = "";
+        return;
+      }
+      const matches = root.descendants().filter((d) => d.data.name.toLowerCase().includes(query));
+      if (matches.length > 0) {
+        searchResults.textContent = `Found: ${matches.map((d) => d.data.name).join(", ")}`;
+        matches.forEach((d) => highlightNode(d.data.name));
+      } else {
+        searchResults.textContent = "No matches found";
+      }
+    });
+
+    // Timeline (simple example)
+    const timelineData = [
+      {
+        name: "Grandparent A",
+        year: 1920,
+        photo: "grandparent-a.jpg",
+        event: "Born in Sydney",
+      },
+      {
+        name: "Parent A",
+        year: 1950,
+        photo: "parent-a.jpg",
+        event: "Married",
+      },
+      {
+        name: "You",
+        year: 1980,
+        photo: "you.jpg",
+        event: "Born",
+      },
+      // Add more events as needed
+    ];
+
+    const timelineContainer = document.getElementById("timeline");
+
+    function renderTimeline() {
+      timelineContainer.innerHTML = "";
+      timelineData.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "timeline-item";
+        div.innerHTML = `
+          <img src="assets/photos/${item.photo}" alt="${item.name}" onerror="this.src='assets/photos/placeholder.jpg'" />
+          <div>
+            <strong>${item.year} - ${item.name}</strong><br />
+            <small>${item.event}</small>
+          </div>
+        `;
+        timelineContainer.appendChild(div);
+      });
+    }
+    renderTimeline();
+
+    // Zoom buttons
+    const zoom = d3.zoom().scaleExtent([0.5, 2]).on("zoom", (event) => {
+      g.attr("transform", event.transform);
+    });
+    svg.call(zoom);
+
+    document.getElementById("zoomInBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.scaleBy, 1.2);
+    });
+    document.getElementById("zoomOutBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.scaleBy, 0.8);
+    });
+    document.getElementById("resetZoomBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
+    });
+
+  </script>
 </body>
 </html>
