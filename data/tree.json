@@ -1,24 +1,4 @@
 {
-  "name": "Lynn",
-  "photo": "lynn.jpg",
-  "bio": "lynn.html",
-  "children": [
-    {
-      "name": "Parent A",
-      "photo": "parent-a.jpg",
-      "children": [
-        {
-          "name": "Grandparent A",
-          "photo": "grandparent-a.jpg"
-        },
-        {
-          "name": "Grandparent B",
-          "photo": "grandparent-b.jpg"
-        }
-      ]
-    },
-
-{
   "name": "You",
   "photo": "you.jpg",
   "children": [
