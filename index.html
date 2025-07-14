@@ -153,6 +153,143 @@
   </style>
 </head>
 <body>
-  <!-- Page content remains unchanged -->
+  <header>
+    <h1>The Sinclair Family Tree</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="https://github.com/YOUR_USERNAME/YOUR_REPO/discussions" target="_blank">🗣️ Discussions</a>
+    <div class="dropdown">
+      📘 Bios
+      <div class="dropdown-content">
+        <a href="bios/grandparent-a.html" target="_blank">Grandparent A</a>
+        <a href="bios/grandparent-b.html" target="_blank">Grandparent B</a>
+        <a href="bios/parent-a.html" target="_blank">Parent A</a>
+        <a href="bios/parent-b.html" target="_blank">Parent B</a>
+        <a href="bios/sibling.html" target="_blank">Sibling</a>
+        <a href="bios/you.html" target="_blank">You</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="timeline-container">
+    <h2>🕰️ Timeline of Key Events</h2>
+    <div class="timeline-item">1932 – Alice Sinclair is born in Perth</div>
+    <div class="timeline-item">1953 – Alice marries Edward Sinclair</div>
+    <div class="timeline-item">1985 – First family reunion held in Melbourne</div>
+    <div class="timeline-item">2011 – Alice passes away</div>
+  </section>
+
+  <section class="about">
+    <p>Welcome to the Sinclair Family Tree. This is a collaborative digital archive celebrating the lives, stories, and memories of our extended family. Click on a person below to view their biography and share your own stories in the discussion space.</p>
+  </section>
+
+  <div class="search-box">
+    <label for="searchInput">🔍 Search Family Members</label>
+    <input type="text" id="searchInput" placeholder="Search for a name...">
+  </div>
+
+  <div class="tree-container">
+    <div class="zoom-controls">
+      <button onclick="zoomIn()">＋ Zoom In</button>
+      <button onclick="zoomOut()">－ Zoom Out</button>
+      <button onclick="resetZoom()">🔄 Reset</button>
+    </div>
+    <div class="zoom-wrapper" id="tree"></div>
+  </div>
+
+  <footer>
+    © 2025 The Sinclair Family. Built with ❤️ for generations to come.
+  </footer>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    let d3Zoom, svgRoot;
+
+    async function loadTreeData() {
+      const response = await fetch('data/tree.json');
+      const treeData = await response.json();
+
+      const margin = { top: 20, right: 90, bottom: 30, left: 90 },
+            width = 1200,
+            height = 800;
+
+      const svgElement = d3.select("#tree").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
+
+      d3Zoom = d3.zoom().on("zoom", function (event) {
+        svgRoot.attr("transform", event.transform);
+      });
+      svgElement.call(d3Zoom);
+
+      svgRoot = svgElement.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const root = d3.hierarchy(treeData);
+      const treeLayout = d3.tree().nodeSize([120, 120]);
+      treeLayout(root);
+
+      svgRoot.selectAll('.link')
+        .data(root.links())
+        .enter()
+        .append('path')
+        .attr('class', 'link')
+        .attr('d', d3.linkVertical()
+          .x(d => d.x)
+          .y(d => d.y)
+        );
+
+      const nodes = svgRoot.selectAll('.node')
+        .data(root.descendants())
+        .enter()
+        .append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${d.x},${d.y})`)
+        .style('cursor', 'pointer')
+        .on('click', function(event, d) {
+          const name = d.data.name;
+          const link = `bios/${name.toLowerCase().replace(/ /g, '-')}.html`;
+          window.open(link, '_blank');
+        });
+
+      nodes.append('image')
+        .attr('xlink:href', d => `assets/photos/${d.data.photo || 'placeholder.jpg'}`)
+        .attr('x', -20)
+        .attr('y', -20)
+        .attr('width', 40)
+        .attr('height', 40)
+        .on('error', function () {
+          d3.select(this).attr('xlink:href', 'assets/photos/placeholder.jpg');
+        });
+
+      nodes.append('text')
+        .attr('dy', 35)
+        .attr('text-anchor', 'middle')
+        .text(d => d.data.name);
+
+      document.getElementById('searchInput').addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        nodes.selectAll('text')
+          .style('font-weight', d => d.data.name.toLowerCase().includes(query) ? 'bold' : 'normal')
+          .style('fill', d => d.data.name.toLowerCase().includes(query) ? '#0096FF' : '#2e7d32');
+      });
+    }
+
+    function zoomIn() {
+      d3.select("svg").transition().call(d3Zoom.scaleBy, 1.2);
+    }
+
+    function zoomOut() {
+      d3.select("svg").transition().call(d3Zoom.scaleBy, 0.8);
+    }
+
+    function resetZoom() {
+      d3.select("svg").transition().call(d3Zoom.transform, d3.zoomIdentity);
+    }
+
+    loadTreeData();
+  </script>
 </body>
 </html>
