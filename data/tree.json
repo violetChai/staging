@@ -1,30 +1,81 @@
 {
-    "name": "Grandparent A",
-    "photo": "grandparent-a.jpg",
-    "children": [
+  "name": "Grandparents",
+  "children": [
+    {
+      "name": "Grandparent A",
+      "photo": "grandparent-a.jpg",
+      "bio": "grandparent-a.html",
+      "children": [
         {
-            "name": "Parent A",
-            "photo": "parent-a.jpg",
-            "children": [
+          "name": "Parent A",
+          "photo": "parent-a.jpg",
+          "bio": "parent-a.html",
+          "children": [
+            {
+              "name": "Sibling 1",
+              "photo": "sibling1.jpg",
+              "bio": "sibling1.html"
+            },
+            {
+              "name": "Sibling 2",
+              "photo": "sibling2.jpg",
+              "bio": "sibling2.html",
+              "children": [
                 {
-                    "name": "You",
-                    "photo": "you.jpg"
-                },
-                {
-                    "name": "Sibling",
-                    "photo": "sibling.jpg",
-                    "children": [
-                        {
-                            "name": "Sibling Kid 1",
-                            "photo": "sibling-kid1.jpg"
-                        }
-                    ]
+                  "name": "Spouse 2",
+                  "photo": "spouse2.jpg",
+                  "bio": "spouse2.html",
+                  "children": [
+                    {
+                      "name": "Child 2",
+                      "photo": "child2.jpg",
+                      "bio": "child2.html"
+                    }
+                  ]
                 }
-            ]
-        },
-        {
-            "name": "Parent B",
-            "photo": "parent-b.jpg"
+              ]
+            },
+            {
+              "name": "You",
+              "photo": "you.jpg",
+              "bio": "you.html"
+            }
+          ]
         }
-    ]
+      ]
+    },
+    {
+      "name": "Grandparent B",
+      "photo": "grandparent-b.jpg",
+      "bio": "grandparent-b.html",
+      "children": [
+        {
+          "name": "Parent B",
+          "photo": "parent-b.jpg",
+          "bio": "parent-b.html",
+          "children": [
+            {
+              "name": "Sibling 3",
+              "photo": "sibling3.jpg",
+              "bio": "sibling3.html",
+              "children": [
+                {
+                  "name": "Spouse 3",
+                  "photo": "spouse3.jpg",
+                  "bio": "spouse3.html",
+                  "children": [
+                    {
+                      "name": "Child 3",
+                      "photo": "child3.jpg",
+                      "bio": "child3.html"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
