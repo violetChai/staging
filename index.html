@@ -98,7 +98,22 @@
       width: 100%;
       overflow: auto;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    .zoom-controls {
+      display: flex;
+      gap: 10px;
+      margin: 10px;
+    }
+    .zoom-controls button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
     }
     .zoom-wrapper {
       width: 100%;
@@ -170,6 +185,11 @@
   </div>
 
   <div class="tree-container">
+    <div class="zoom-controls">
+      <button onclick="zoomIn()">＋ Zoom In</button>
+      <button onclick="zoomOut()">－ Zoom Out</button>
+      <button onclick="resetZoom()">🔄 Reset</button>
+    </div>
     <div class="zoom-wrapper" id="tree"></div>
   </div>
 
@@ -179,6 +199,8 @@
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
+    let d3Zoom, svgRoot;
+
     async function loadTreeData() {
       const response = await fetch('data/tree.json');
       const treeData = await response.json();
@@ -187,20 +209,23 @@
             width = 1200,
             height = 800;
 
-      const svg = d3.select("#tree").append("svg")
+      const svgElement = d3.select("#tree").append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .call(d3.zoom().on("zoom", function (event) {
-          svg.select("g").attr("transform", event.transform);
-        }))
-        .append("g")
+        .attr("height", height + margin.top + margin.bottom);
+
+      d3Zoom = d3.zoom().on("zoom", function (event) {
+        svgRoot.attr("transform", event.transform);
+      });
+      svgElement.call(d3Zoom);
+
+      svgRoot = svgElement.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
       const root = d3.hierarchy(treeData);
       const treeLayout = d3.tree().nodeSize([120, 120]);
       treeLayout(root);
 
-      svg.selectAll('.link')
+      svgRoot.selectAll('.link')
         .data(root.links())
         .enter()
         .append('path')
@@ -210,7 +235,7 @@
           .y(d => d.y)
         );
 
-      const nodes = svg.selectAll('.node')
+      const nodes = svgRoot.selectAll('.node')
         .data(root.descendants())
         .enter()
         .append('g')
@@ -244,6 +269,18 @@
           .style('font-weight', d => d.data.name.toLowerCase().includes(query) ? 'bold' : 'normal')
           .style('fill', d => d.data.name.toLowerCase().includes(query) ? '#0096FF' : '#2e7d32');
       });
+    }
+
+    function zoomIn() {
+      d3.select("svg").transition().call(d3Zoom.scaleBy, 1.2);
+    }
+
+    function zoomOut() {
+      d3.select("svg").transition().call(d3Zoom.scaleBy, 0.8);
+    }
+
+    function resetZoom() {
+      d3.select("svg").transition().call(d3Zoom.transform, d3.zoomIdentity);
     }
 
     loadTreeData();
