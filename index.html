@@ -14,7 +14,7 @@
       flex-direction: column;
       min-height: 100vh;
     }
-    header, nav, .about, .timeline-container, footer, .search-box {
+    header, nav {
       width: 100%;
     }
     header {
@@ -59,17 +59,16 @@
     .dropdown:hover .dropdown-content {
       display: block;
     }
-    .about {
+    .card {
+      background: #fff;
+      margin: 20px auto;
       padding: 20px;
-      background: #ffffff;
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #444;
-      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 1000px;
     }
-    .search-box {
-      padding: 10px 20px;
-      text-align: center;
+    .card h2 {
+      margin-top: 0;
     }
     .search-box label {
       display: block;
@@ -84,18 +83,11 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .timeline-container {
-      padding: 20px;
-      text-align: center;
-    }
     .timeline-item {
       background: white;
       margin-bottom: 10px;
       padding: 10px;
       border-left: 5px solid #66bb6a;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
     }
     .tree-container {
       flex: 1;
@@ -173,7 +165,7 @@
     </div>
   </nav>
 
-  <section class="timeline-container">
+  <section class="card">
     <h2>🕰️ Timeline of Key Events</h2>
     <div class="timeline-item">1932 – Alice Sinclair is born in Perth</div>
     <div class="timeline-item">1953 – Alice marries Edward Sinclair</div>
@@ -181,16 +173,16 @@
     <div class="timeline-item">2011 – Alice passes away</div>
   </section>
 
-  <section class="about">
+  <section class="card">
     <p>Welcome to the Sinclair Family Tree. This is a collaborative digital archive celebrating the lives, stories, and memories of our extended family. Click on a person below to view their biography and share your own stories in the discussion space.</p>
   </section>
 
-  <div class="search-box">
+  <div class="card search-box">
     <label for="searchInput">🔍 Search Family Members</label>
     <input type="text" id="searchInput" placeholder="Search for a name...">
   </div>
 
-  <div class="tree-container">
+  <div class="card tree-container">
     <div class="zoom-controls">
       <button onclick="zoomIn()">＋ Zoom In</button>
       <button onclick="zoomOut()">－ Zoom Out</button>
