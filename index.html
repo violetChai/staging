@@ -93,6 +93,11 @@
     .tree-container {
       flex: 1;
       width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .tree-container svg {
+      display: block;
     }
     .node image {
       clip-path: circle(20px at center);
@@ -113,10 +118,6 @@
       font-size: 0.9rem;
       color: #555;
       margin-top: auto;
-    }
-    svg {
-      max-width: 100%;
-      height: auto;
     }
   </style>
 </head>
@@ -223,9 +224,13 @@
 
       document.getElementById('searchInput').addEventListener('input', function () {
         const query = this.value.toLowerCase();
-        nodes.selectAll('text')
-          .style('font-weight', d => d.data.name.toLowerCase().includes(query) ? 'bold' : 'normal')
-          .style('fill', d => d.data.name.toLowerCase().includes(query) ? '#2e7d32' : '#333');
+        nodes.select('text')
+          .each(function(d) {
+            const match = d.data.name.toLowerCase().includes(query);
+            d3.select(this)
+              .style('font-weight', match ? 'bold' : 'normal')
+              .style('fill', match ? '#2e7d32' : '#333');
+          });
       });
     }
 
