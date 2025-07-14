@@ -1,35 +1,35 @@
 {
-  "name": "Grandparent A",
-  "photo": "grandparent-a.jpg",
-  "children": [
-    {
-      "name": "Parent A",
-      "photo": "parent-a.jpg",
-      "children": [
+    "name": "Grandparent A",
+    "photo": "grandparent-a.jpg",
+    "children": [
         {
-          "name": "You",
-          "photo": "you.jpg"
+            "name": "Parent A",
+            "photo": "parent-a.jpg",
+            "children": [
+                {
+                    "name": "You",
+                    "photo": "you.jpg"
+                },
+                                        {
+                            "name": "Lynn",
+                            "photo": "lynn.jpg""bio": "lynn.html"
+                        },
+                {
+                    "name": "Sibling",
+                    "photo": "sibling.jpg",
+                    "children": [
+                        {
+                            "name": "Sibling Kid 1",
+                            "photo": "sibling-kid1.jpg"
+                        },
+
+                    ]
+                }
+            ]
         },
         {
-          "name": "Sibling",
-          "photo": "sibling.jpg",
-          "children": [
-            {
-              "name": "Sibling Kid 1",
-              "photo": "sibling-kid1.jpg"
-            },
-            {
-              "name": "Lynn",
-              "photo": "lynn.jpg"
-              "bio": "lynn.html"
-            }
-          ]
+            "name": "Parent B",
+            "photo": "parent-b.jpg"
         }
-      ]
-    },
-    {
-      "name": "Parent B",
-      "photo": "parent-b.jpg"
-    }
-  ]
+    ]
 }
