@@ -1,44 +1,34 @@
 {
-  "name": "You",
-  "photo": "you.jpg",
+  "name": "Grandparent A",
+  "photo": "grandparent-a.jpg",
   "children": [
     {
       "name": "Parent A",
       "photo": "parent-a.jpg",
       "children": [
         {
-          "name": "Grandparent A",
-          "photo": "grandparent-a.jpg"
+          "name": "You",
+          "photo": "you.jpg"
         },
         {
-          "name": "Grandparent B",
-          "photo": "grandparent-b.jpg"
+          "name": "Sibling",
+          "photo": "sibling.jpg",
+          "children": [
+            {
+              "name": "Sibling Kid 1",
+              "photo": "sibling-kid1.jpg"
+            },
+            {
+              "name": "New Person",
+              "photo": "new-person.jpg"
+            }
+          ]
         }
       ]
     },
     {
       "name": "Parent B",
-      "photo": "parent-b.jpg",
-      "children": [
-        {
-          "name": "Grandparent C",
-          "photo": "grandparent-c.jpg"
-        },
-        {
-          "name": "Grandparent D",
-          "photo": "grandparent-d.jpg"
-        }
-      ]
-    },
-    {
-      "name": "Sibling",
-      "photo": "sibling.jpg",
-      "children": [
-        {
-          "name": "Sibling's Kid 1",
-          "photo": "sibling-kid1.jpg"
-        }
-      ]
+      "photo": "parent-b.jpg"
     }
   ]
 }
