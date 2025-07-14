@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Grandparent A - Bio</title>
+  <link rel="icon" href="../assets/favicon.ico" type="image/x-ico" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      color: #2e7d32;
+    }
+    img {
+      max-width: 200px;
+      border-radius: 12px;
+      display: block;
+      margin: 1rem 0;
+    }
+    blockquote {
+      margin-left: 1rem;
+      padding-left: 1rem;
+      border-left: 3px solid #66bb6a;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Grandparent A</h1>
+  <img src=\"../assets/photos/grandparent-a.jpg\" alt=\"Grandparent A\">
+  <p><strong>Full Name:</strong> Alice Margaret Sinclair</p>
+  <p><strong>Born:</strong> 1932, Perth, Australia</p>
+  <p><strong>Died:</strong> 2011, Melbourne, Australia</p>
+
+  <h2>About</h2>
+  <p>Alice was a schoolteacher with a love for Shakespeare and wildflowers...</p>
+
+  <h2>Stories</h2>
+  <blockquote>“She always said to leave the world a little kinder than you found it.”</blockquote>
+</body>
+</html>
