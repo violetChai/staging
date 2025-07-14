@@ -141,12 +141,6 @@
     </div>
   </nav>
 
-  <div class="zoom-controls">
-    <button onclick="zoomIn()">+</button>
-    <button onclick="zoomOut()">–</button>
-    <button onclick="resetZoom()">Reset</button>
-  </div>
-
   <div id="tree" class="tree-container"></div>
 
   <footer>
@@ -181,9 +175,10 @@
       const treeLayout = d3.tree().nodeSize([120, 120]);
       treeLayout(root);
 
+      // Show full tree (no collapsing)
       root.descendants().forEach(d => {
         d._children = d.children;
-        if (d.depth > 1) d.children = null;
+        // Leave expanded by default
       });
 
       function update(source) {
@@ -229,19 +224,6 @@
       }
 
       update(root);
-    }
-
-    function zoomIn() {
-      d3.select("svg").transition().call(d3Zoom.scaleBy, 1.2);
-    }
-
-    function zoomOut() {
-      d3.select("svg").transition().call(d3Zoom.scaleBy, 0.8);
-    }
-
-    function resetZoom() {
-      const svg = d3.select("svg");
-      svg.transition().call(d3Zoom.transform, d3.zoomIdentity.translate(600, 100));
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
