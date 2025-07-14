@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Pinto Family Tree</title>
-  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <title>The Sinclair Family Tree</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <style>
     body {
       font-family: sans-serif;
@@ -63,48 +63,9 @@
       color: #2e7d32;
       white-space: nowrap;
     }
-    .dropdown:hover .dropdown-content {
+    .dropdown:hover .dropdown-content,
+    .dropdown-content:hover {
       display: block;
-    }
-    .card {
-      background: #fff;
-      margin: 20px auto;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      max-width: 1000px;
-    }
-    .card h2 {
-      margin-top: 0;
-    }
-    .search-box label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .search-box input {
-      padding: 8px;
-      width: 100%;
-      max-width: 300px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding-right: 12px;
-    }
-    .timeline-item {
-      background: white;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-left: 5px solid #66bb6a;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .timeline-item img {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 50%;
     }
     .tree-container {
       flex: 1;
@@ -127,12 +88,6 @@
       font-size: 16px;
       border-radius: 4px;
       cursor: pointer;
-    }
-    .zoom-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
     }
     svg {
       display: block;
@@ -164,51 +119,38 @@
 <body>
   <header>
     <img src="assets/photos/tree-icon.png" alt="Tree Icon">
-    <h1>The Pinto Family Tree</h1>
+    <h1>The Sinclair Family Tree</h1>
   </header>
 
   <nav>
-    <a href="index.html">🏠 Home</a>
-    <a href="https://github.com/violetChai/familytree/discussions" target="_blank">🗣️ Discussions</a>
-    <div class="dropdown">
-      📘 Bios
+    <div class="dropdown">Bios
       <div class="dropdown-content">
         <a href="bios/grandparent-a.html" target="_blank">Grandparent A</a>
         <a href="bios/grandparent-b.html" target="_blank">Grandparent B</a>
         <a href="bios/parent-a.html" target="_blank">Parent A</a>
         <a href="bios/parent-b.html" target="_blank">Parent B</a>
-        <a href="bios/sibling.html" target="_blank">Sibling</a>
+        <a href="bios/sibling1.html" target="_blank">Sibling 1</a>
+        <a href="bios/sibling2.html" target="_blank">Sibling 2</a>
+        <a href="bios/spouse2.html" target="_blank">Spouse 2</a>
+        <a href="bios/child2.html" target="_blank">Child 2</a>
+        <a href="bios/sibling3.html" target="_blank">Sibling 3</a>
+        <a href="bios/spouse3.html" target="_blank">Spouse 3</a>
+        <a href="bios/child3.html" target="_blank">Child 3</a>
         <a href="bios/you.html" target="_blank">You</a>
-        <a href="bios/lynn.html" target="_blank">Lynn</a>
       </div>
     </div>
   </nav>
 
-  <section class="card">
-    <h2>🕰️ Timeline of Key Events</h2>
-    <div id="timeline"></div>
-  </section>
-
-  <section class="card">
-    <p>Welcome to the Pinto Family Tree. This is a collaborative digital archive celebrating the lives, stories, and memories of our extended family. Click on a person below to view their biography and share your own stories in the discussion space.</p>
-  </section>
-
-  <div class="card search-box">
-    <label for="searchInput">🔍 Search Family Members</label>
-    <input type="text" id="searchInput" placeholder="Search for a name...">
+  <div class="zoom-controls">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">–</button>
+    <button onclick="resetZoom()">Reset</button>
   </div>
 
-  <div class="card tree-container">
-    <div class="zoom-controls">
-      <button onclick="zoomIn()">＋ Zoom In</button>
-      <button onclick="zoomOut()">－ Zoom Out</button>
-      <button onclick="resetZoom()">🔄 Reset</button>
-    </div>
-    <div class="zoom-wrapper" id="tree"></div>
-  </div>
+  <div id="tree" class="tree-container"></div>
 
   <footer>
-    © <span id="year"></span> The Pinto Family. Built with ❤️ for generations to come.
+    &copy; <span id="year"></span> The Sinclair Family Tree Project
   </footer>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -284,13 +226,6 @@
           .attr('dy', 35)
           .attr('text-anchor', 'middle')
           .text(d => d.data.name);
-
-        document.getElementById('searchInput').addEventListener('input', function () {
-          const query = this.value.toLowerCase();
-          nodes.selectAll('text')
-            .style('font-weight', d => d.data.name.toLowerCase().includes(query) ? 'bold' : 'normal')
-            .style('fill', d => d.data.name.toLowerCase().includes(query) ? '#0096FF' : '#2e7d32');
-        });
       }
 
       update(root);
@@ -305,29 +240,12 @@
     }
 
     function resetZoom() {
-      d3.select("svg").transition().call(d3Zoom.transform, d3.zoomIdentity);
-    }
-
-    function loadTimeline() {
-      const items = [
-        { date: '1932', name: 'Alice Sinclair', photo: 'alice.jpg', event: 'is born in Perth' },
-        { date: '1953', name: 'Alice & Edward', photo: 'wedding.jpg', event: 'marry in Fremantle' },
-        { date: '1985', name: 'Family Reunion', photo: 'reunion.jpg', event: 'first family reunion in Melbourne' },
-        { date: '2011', name: 'Alice Sinclair', photo: 'alice.jpg', event: 'passes away' },
-        { date: '1975', name: 'Lynn Pinto-Bourke', photo: 'lynn.jpg', event: 'Arrives into the world! & says <Hello, World!/>' }
-      ];
-      const container = document.getElementById('timeline');
-      items.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'timeline-item';
-        div.innerHTML = `<img src="assets/photos/${item.photo}" alt="${item.name}" onerror="this.src='assets/photos/placeholder.jpg'"> <strong>${item.date} –</strong> ${item.name} ${item.event}`;
-        container.appendChild(div);
-      });
+      const svg = d3.select("svg");
+      svg.transition().call(d3Zoom.transform, d3.zoomIdentity.translate(600, 100));
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
-    loadTreeData();
-    loadTimeline();
+    window.addEventListener('DOMContentLoaded', loadTreeData);
   </script>
 </body>
 </html>
