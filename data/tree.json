@@ -19,8 +19,9 @@
               "photo": "sibling-kid1.jpg"
             },
             {
-              "name": "New Person",
-              "photo": "new-person.jpg"
+              "name": "Lynn",
+              "photo": "lynn.jpg"
+              "bio": "lynn.html"
             }
           ]
         }
