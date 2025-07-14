@@ -67,6 +67,46 @@
     .dropdown-content:hover {
       display: block;
     }
+    .card {
+      background: #fff;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 1000px;
+    }
+    .card h2 {
+      margin-top: 0;
+    }
+    .search-box label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .search-box input {
+      padding: 8px;
+      width: 100%;
+      max-width: 300px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding-right: 12px;
+    }
+    .timeline-item {
+      background: white;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-left: 5px solid #66bb6a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .timeline-item img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
     .tree-container {
       flex: 1;
       width: 100%;
@@ -89,6 +129,12 @@
       font-size: 16px;
       border-radius: 4px;
       cursor: pointer;
+    }
+    .zoom-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
     }
     svg {
       display: block;
@@ -154,100 +200,10 @@
     &copy; <span id="year"></span> The Sinclair Family Tree Project
   </footer>
 
-  <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
-    let d3Zoom, svgRoot;
-
-    async function loadTreeData() {
-      const response = await fetch('data/tree.json');
-      const treeData = await response.json();
-
-      const margin = { top: 100, right: 90, bottom: 30, left: 90 },
-            width = 1200,
-            height = 800;
-
-      const svgElement = d3.select("#tree").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
-
-      d3Zoom = d3.zoom().on("zoom", function (event) {
-        svgRoot.attr("transform", event.transform);
-      });
-      svgElement.call(d3Zoom);
-
-      svgRoot = svgElement.append("g")
-        .attr("transform", `translate(${width / 2},${margin.top})`);
-
-      const root = d3.hierarchy(treeData);
-      const treeLayout = d3.tree().nodeSize([120, 120]);
-      treeLayout(root);
-
-      // Show full tree expanded
-      root.descendants().forEach(d => {
-        d._children = d.children;
-        // Keep all children open
-      });
-
-      function update(source) {
-        svgRoot.selectAll('*').remove();
-
-        treeLayout(root);
-
-        svgRoot.selectAll('.link')
-          .data(root.links())
-          .enter()
-          .append('path')
-          .attr('class', 'link')
-          .attr('d', d3.linkVertical()
-            .x(d => d.x)
-            .y(d => d.y));
-
-        const nodes = svgRoot.selectAll('.node')
-          .data(root.descendants())
-          .enter()
-          .append('g')
-          .attr('class', 'node')
-          .attr('transform', d => `translate(${d.x},${d.y})`)
-          .style('cursor', 'pointer')
-          .on('click', function(event, d) {
-            d.children = d.children ? null : d._children;
-            update(d);
-          });
-
-        nodes.append('image')
-          .attr('xlink:href', d => `assets/photos/${d.data.photo || 'placeholder.jpg'}`)
-          .attr('x', -20)
-          .attr('y', -20)
-          .attr('width', 40)
-          .attr('height', 40)
-          .on('error', function () {
-            d3.select(this).attr('xlink:href', 'assets/photos/placeholder.jpg');
-          });
-
-        nodes.append('text')
-          .attr('dy', 35)
-          .attr('text-anchor', 'middle')
-          .text(d => d.data.name);
-      }
-
-      update(root);
-    }
-
-    function zoomIn() {
-      d3.select("svg").transition().call(d3Zoom.scaleBy, 1.2);
-    }
-
-    function zoomOut() {
-      d3.select("svg").transition().call(d3Zoom.scaleBy, 0.8);
-    }
-
-    function resetZoom() {
-      const svg = d3.select("svg");
-      svg.transition().call(d3Zoom.transform, d3.zoomIdentity.translate(600, 100));
-    }
-
     document.getElementById("year").textContent = new Date().getFullYear();
-    window.addEventListener('DOMContentLoaded', loadTreeData);
   </script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="js/tree-script.js"></script>
 </body>
 </html>
