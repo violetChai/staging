@@ -66,10 +66,12 @@
       color: #2e7d32;
       white-space: nowrap;
     }
+    /* Make dropdown stay open while hovering on dropdown-content */
     .dropdown:hover .dropdown-content,
     .dropdown-content:hover {
       display: block;
     }
+
     .welcome-section {
       max-width: 1000px;
       margin: 20px auto;
@@ -81,8 +83,9 @@
     }
     .search-box {
       max-width: 320px;
-      margin: 20px auto;
+      margin: 20px auto 0;
       text-align: left;
+      position: relative;
     }
     .search-box label {
       font-weight: bold;
@@ -103,6 +106,8 @@
       margin: 5px auto 20px;
       color: #0096FF;
       font-weight: bold;
+      cursor: pointer;
+      user-select: none;
     }
     .timeline-section {
       max-width: 1000px;
@@ -187,20 +192,20 @@
   </header>
 
   <nav>
-    <div class="dropdown">Bios
-      <div class="dropdown-content">
-        <a href="bios/grandparent-a.html" target="_blank">Grandparent A</a>
-        <a href="bios/grandparent-b.html" target="_blank">Grandparent B</a>
-        <a href="bios/parent-a.html" target="_blank">Parent A</a>
-        <a href="bios/parent-b.html" target="_blank">Parent B</a>
-        <a href="bios/sibling1.html" target="_blank">Sibling 1</a>
-        <a href="bios/sibling2.html" target="_blank">Sibling 2</a>
-        <a href="bios/spouse2.html" target="_blank">Spouse 2</a>
-        <a href="bios/child2.html" target="_blank">Child 2</a>
-        <a href="bios/sibling3.html" target="_blank">Sibling 3</a>
-        <a href="bios/spouse3.html" target="_blank">Spouse 3</a>
-        <a href="bios/child3.html" target="_blank">Child 3</a>
-        <a href="bios/you.html" target="_blank">You</a>
+    <div class="dropdown" tabindex="0">Bios
+      <div class="dropdown-content" role="menu" aria-label="Family Bios">
+        <a href="bios/grandparent-a.html" target="_blank" role="menuitem">Grandparent A</a>
+        <a href="bios/grandparent-b.html" target="_blank" role="menuitem">Grandparent B</a>
+        <a href="bios/parent-a.html" target="_blank" role="menuitem">Parent A</a>
+        <a href="bios/parent-b.html" target="_blank" role="menuitem">Parent B</a>
+        <a href="bios/sibling1.html" target="_blank" role="menuitem">Sibling 1</a>
+        <a href="bios/sibling2.html" target="_blank" role="menuitem">Sibling 2</a>
+        <a href="bios/spouse2.html" target="_blank" role="menuitem">Spouse 2</a>
+        <a href="bios/child2.html" target="_blank" role="menuitem">Child 2</a>
+        <a href="bios/sibling3.html" target="_blank" role="menuitem">Sibling 3</a>
+        <a href="bios/spouse3.html" target="_blank" role="menuitem">Spouse 3</a>
+        <a href="bios/child3.html" target="_blank" role="menuitem">Child 3</a>
+        <a href="bios/you.html" target="_blank" role="menuitem">You</a>
       </div>
     </div>
   </nav>
@@ -212,7 +217,7 @@
 
   <section class="search-box" aria-label="Search family members">
     <label for="searchInput">Search Family Members:</label>
-    <input type="text" id="searchInput" placeholder="Enter name..." />
+    <input type="text" id="searchInput" placeholder="Enter name..." autocomplete="off" />
     <div id="searchResults" class="search-results" aria-live="polite" aria-atomic="true"></div>
   </section>
 
@@ -235,13 +240,17 @@
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
+    // Set current year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Family tree data structure
     const treeData = {
       "name": "Grandparents",
       "children": [
         {
           "name": "Grandparent A",
           "photo": "grandparent-a.jpg",
-          "bio": "Bios/grandparent-a.html",
+          "bio": "bios/grandparent-a.html",
           "children": [
             {
               "name": "Parent A",
@@ -313,30 +322,17 @@
       ]
     };
 
-    // Set current year
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // D3 tree setup
+    // Setup D3 tree layout
     const margin = { top: 100, right: 90, bottom: 30, left: 90 },
       width = 1200 - margin.left - margin.right,
       height = 700 - margin.top - margin.bottom;
 
-    const svg = d3
-      .select("#tree")
+    const svg = d3.select("#tree")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .call(
-        d3
-          .zoom()
-          .scaleExtent([0.5, 2])
-          .on("zoom", (event) => {
-            g.attr("transform", event.transform);
-          })
-      );
+      .attr("height", height + margin.top + margin.bottom);
 
-    const g = svg
-      .append("g")
+    const g = svg.append("g")
       .attr("transform", `translate(${width / 2},${margin.top})`);
 
     const root = d3.hierarchy(treeData);
@@ -344,46 +340,59 @@
     treeLayout(root);
 
     // Create links
-    const link = g
-      .selectAll(".link")
+    const link = g.selectAll(".link")
       .data(root.links())
       .join("path")
       .attr("class", "link")
-      .attr(
-        "d",
-        d3
-          .linkVertical()
-          .x((d) => d.x)
-          .y((d) => d.y)
-      );
+      .attr("d", d3.linkVertical()
+        .x(d => d.x)
+        .y(d => d.y));
 
     // Create nodes
-    const node = g
-      .selectAll(".node")
+    const node = g.selectAll(".node")
       .data(root.descendants())
       .join("g")
       .attr("class", "node")
-      .attr("transform", (d) => `translate(${d.x},${d.y})`);
+      .attr("transform", d => `translate(${d.x},${d.y})`)
+      .style("cursor", "pointer")
+      .on("click", d => {
+        if (d.data.bio) window.open(d.data.bio, "_blank");
+      });
 
-    node
-      .append("image")
-      .attr("xlink:href", (d) =>
-        d.data.photo ? "assets/photos/" + d.data.photo : "assets/photos/placeholder.jpg"
-      )
+    node.append("image")
+      .attr("xlink:href", d => d.data.photo ? "assets/photos/" + d.data.photo : "assets/photos/placeholder.jpg")
       .attr("x", -20)
       .attr("y", -20)
       .attr("width", 40)
       .attr("height", 40)
-      .attr("alt", (d) => d.data.name)
+      .attr("alt", d => d.data.name)
       .on("error", function () {
         d3.select(this).attr("xlink:href", "assets/photos/placeholder.jpg");
       });
 
-    node
-      .append("text")
+    node.append("text")
       .attr("dy", 35)
       .attr("text-anchor", "middle")
-      .text((d) => d.data.name);
+      .text(d => d.data.name);
+
+    // Setup zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([0.5, 2])
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+      });
+    svg.call(zoom).call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
+
+    // Zoom buttons
+    document.getElementById("zoomInBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.scaleBy, 1.2);
+    });
+    document.getElementById("zoomOutBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.scaleBy, 0.8);
+    });
+    document.getElementById("resetZoomBtn").addEventListener("click", () => {
+      svg.transition().call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
+    });
 
     // Search functionality
     const searchInput = document.getElementById("searchInput");
@@ -394,8 +403,7 @@
     }
 
     function highlightNode(name) {
-      node
-        .filter((d) => d.data.name.toLowerCase() === name.toLowerCase())
+      node.filter(d => d.data.name.toLowerCase() === name.toLowerCase())
         .select("text")
         .attr("fill", "#0096FF")
         .attr("font-weight", "bold");
@@ -404,47 +412,46 @@
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.trim().toLowerCase();
       clearHighlight();
-      if (!query) {
-        searchResults.textContent = "";
-        return;
-      }
-      const matches = root.descendants().filter((d) => d.data.name.toLowerCase().includes(query));
-      if (matches.length > 0) {
-        searchResults.textContent = `Found: ${matches.map((d) => d.data.name).join(", ")}`;
-        matches.forEach((d) => highlightNode(d.data.name));
+      searchResults.innerHTML = "";
+      if (!query) return;
+      const matches = root.descendants().filter(d => d.data.name.toLowerCase().includes(query));
+      if (matches.length) {
+        // Build clickable results list
+        matches.forEach(d => {
+          const a = document.createElement("a");
+          a.textContent = d.data.name;
+          a.href = d.data.bio || "#";
+          a.target = "_blank";
+          a.style.display = "block";
+          a.style.color = "#0096FF";
+          a.style.cursor = "pointer";
+          a.style.textDecoration = "underline";
+          a.addEventListener("click", e => e.stopPropagation());
+          searchResults.appendChild(a);
+          highlightNode(d.data.name);
+        });
       } else {
         searchResults.textContent = "No matches found";
       }
     });
 
-    // Timeline (simple example)
+    // Timeline data and rendering
     const timelineData = [
-      {
-        name: "Grandparent A",
-        year: 1920,
-        photo: "grandparent-a.jpg",
-        event: "Born in Sydney",
-      },
-      {
-        name: "Parent A",
-        year: 1950,
-        photo: "parent-a.jpg",
-        event: "Married",
-      },
-      {
-        name: "You",
-        year: 1980,
-        photo: "you.jpg",
-        event: "Born",
-      },
-      // Add more events as needed
+      { name: "Grandparent A", year: 1920, photo: "grandparent-a.jpg", event: "Born in Sydney" },
+      { name: "Parent A", year: 1950, photo: "parent-a.jpg", event: "Married" },
+      { name: "You", year: 1980, photo: "you.jpg", event: "Born" },
+      { name: "Sibling 1", year: 1983, photo: "sibling1.jpg", event: "Born" },
+      { name: "Sibling 2", year: 1985, photo: "sibling2.jpg", event: "Born" },
+      { name: "Child 2", year: 2010, photo: "child2.jpg", event: "Born" },
+      { name: "Sibling 3", year: 1988, photo: "sibling3.jpg", event: "Born" },
+      { name: "Child 3", year: 2012, photo: "child3.jpg", event: "Born" }
     ];
 
     const timelineContainer = document.getElementById("timeline");
 
     function renderTimeline() {
       timelineContainer.innerHTML = "";
-      timelineData.forEach((item) => {
+      timelineData.forEach(item => {
         const div = document.createElement("div");
         div.className = "timeline-item";
         div.innerHTML = `
@@ -458,22 +465,6 @@
       });
     }
     renderTimeline();
-
-    // Zoom buttons
-    const zoom = d3.zoom().scaleExtent([0.5, 2]).on("zoom", (event) => {
-      g.attr("transform", event.transform);
-    });
-    svg.call(zoom);
-
-    document.getElementById("zoomInBtn").addEventListener("click", () => {
-      svg.transition().call(zoom.scaleBy, 1.2);
-    });
-    document.getElementById("zoomOutBtn").addEventListener("click", () => {
-      svg.transition().call(zoom.scaleBy, 0.8);
-    });
-    document.getElementById("resetZoomBtn").addEventListener("click", () => {
-      svg.transition().call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
-    });
 
   </script>
 </body>
