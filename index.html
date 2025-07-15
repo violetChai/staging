@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Violet Family Tree - Modal Bios</title>
+  <title>The Violet Family Tree - Side Panel Bios</title>
   <style>
-    /* Basic styling (same as before) */
+    /* Same basic styling as before (omitted here for brevity, keep from previous example) */
     body {
       font-family: sans-serif;
       margin: 0;
@@ -13,6 +13,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     header, nav {
       width: 100%;
@@ -202,45 +203,43 @@
       margin-top: auto;
     }
 
-    /* Modal Styles */
-    #bioModal {
-      display: none;
+    /* Side panel styles */
+    #bioPanel {
       position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100%;
+      background: white;
+      box-shadow: -4px 0 12px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      transition: right 0.3s ease;
       z-index: 2000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.6);
-      align-items: center;
-      justify-content: center;
       padding: 20px;
       box-sizing: border-box;
     }
-    #bioModalContent {
-      background: white;
-      border-radius: 8px;
-      max-width: 600px;
-      width: 100%;
-      max-height: 80vh;
-      overflow-y: auto;
-      padding: 20px;
-      position: relative;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    #bioPanel.open {
+      right: 0;
     }
-    #bioModalClose {
+    #bioPanelClose {
       position: absolute;
-      right: 15px;
-      top: 10px;
+      top: 12px;
+      right: 16px;
       font-size: 24px;
-      color: #2e7d32;
       font-weight: bold;
-      border: none;
       background: none;
+      border: none;
+      color: #2e7d32;
       cursor: pointer;
       user-select: none;
     }
-    #bioModalClose:hover {
+    #bioPanelClose:hover {
       color: #006400;
+    }
+    #bioPanel h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #2e7d32;
     }
   </style>
 </head>
@@ -302,16 +301,14 @@
 
   <div id="tree" class="tree-container" aria-label="Family tree"></div>
 
-  <!-- Modal for bios -->
-  <div id="bioModal" role="dialog" aria-modal="true" aria-labelledby="bioModalTitle">
-    <div id="bioModalContent">
-      <button id="bioModalClose" aria-label="Close bio modal">&times;</button>
-      <h3 id="bioModalTitle">Loading...</h3>
-      <div id="bioModalBody" style="margin-top:15px; max-height:60vh; overflow-y:auto;">
-        Loading content...
-      </div>
+  <!-- Side panel for bios -->
+  <aside id="bioPanel" role="region" aria-label="Biography side panel" aria-hidden="true">
+    <button id="bioPanelClose" aria-label="Close biography panel">&times;</button>
+    <h3 id="bioPanelTitle">Loading...</h3>
+    <div id="bioPanelBody" style="margin-top:15px; max-height:80vh; overflow-y:auto;">
+      Loading content...
     </div>
-  </div>
+  </aside>
 
   <footer>
     &copy; <span id="year"></span> The Violet Family Tree Project
@@ -339,16 +336,17 @@
       dropdown.setAttribute('aria-expanded', false);
     });
 
-    // Modal elements
-    const bioModal = document.getElementById('bioModal');
-    const bioModalTitle = document.getElementById('bioModalTitle');
-    const bioModalBody = document.getElementById('bioModalBody');
-    const bioModalClose = document.getElementById('bioModalClose');
+    // Side panel elements
+    const bioPanel = document.getElementById('bioPanel');
+    const bioPanelTitle = document.getElementById('bioPanelTitle');
+    const bioPanelBody = document.getElementById('bioPanelBody');
+    const bioPanelClose = document.getElementById('bioPanelClose');
 
-    function openBioModal(url, name) {
-      bioModal.style.display = 'flex';
-      bioModalTitle.textContent = name;
-      bioModalBody.innerHTML = 'Loading content...';
+    function openBioPanel(url, name) {
+      bioPanel.classList.add('open');
+      bioPanel.setAttribute('aria-hidden', 'false');
+      bioPanelTitle.textContent = name;
+      bioPanelBody.innerHTML = 'Loading content...';
 
       fetch(url)
         .then(resp => {
@@ -356,45 +354,34 @@
           return resp.text();
         })
         .then(html => {
-          bioModalBody.innerHTML = html;
+          bioPanelBody.innerHTML = html;
         })
         .catch(err => {
-          bioModalBody.innerHTML = `<p style="color:red;">${err.message}</p>`;
+          bioPanelBody.innerHTML = `<p style="color:red;">${err.message}</p>`;
         });
     }
 
-    function closeBioModal() {
-      bioModal.style.display = 'none';
-      bioModalBody.innerHTML = '';
-      bioModalTitle.textContent = 'Loading...';
+    function closeBioPanel() {
+      bioPanel.classList.remove('open');
+      bioPanel.setAttribute('aria-hidden', 'true');
+      bioPanelBody.innerHTML = '';
+      bioPanelTitle.textContent = 'Loading...';
     }
 
-    bioModalClose.addEventListener('click', closeBioModal);
+    bioPanelClose.addEventListener('click', closeBioPanel);
 
-    // Close modal if click outside content
-    bioModal.addEventListener('click', e => {
-      if (e.target === bioModal) closeBioModal();
-    });
-
-    // Escape key to close modal
-    window.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && bioModal.style.display === 'flex') {
-        closeBioModal();
-      }
-    });
-
-    // Attach modal open to dropdown bio links
+    // Attach side panel open to dropdown bio links
     dropdownContent.querySelectorAll('a[data-bio]').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
-        openBioModal(link.dataset.bio, link.textContent);
+        openBioPanel(link.dataset.bio, link.textContent);
         dropdownContent.style.display = 'none';
         dropdownBtn.setAttribute('aria-expanded', false);
         dropdown.setAttribute('aria-expanded', false);
       });
     });
 
-    // Family tree data (same as previous)
+    // Family tree data (same as before)
     const treeData = {
       "name": "Grandparents",
       "children": [
@@ -478,7 +465,7 @@
       .style("cursor", "pointer")
       .on("click", d => {
         if (d.data.bio) {
-          openBioModal(d.data.bio, d.data.name);
+          openBioPanel(d.data.bio, d.data.name);
         }
       });
 
@@ -534,7 +521,7 @@
           a.style.textDecoration = "underline";
           a.addEventListener("click", e => {
             e.preventDefault();
-            openBioModal(d.data.bio, d.data.name);
+            openBioPanel(d.data.bio, d.data.name);
           });
           searchResults.appendChild(a);
           highlightNode(d.data.name);
