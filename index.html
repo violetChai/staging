@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Violet Family Tree</title>
-  <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+  <title>The Violet Family Tree - Modal Bios</title>
   <style>
+    /* Basic styling (same as before) */
     body {
       font-family: sans-serif;
       margin: 0;
@@ -201,6 +201,47 @@
       color: #555;
       margin-top: auto;
     }
+
+    /* Modal Styles */
+    #bioModal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    #bioModalContent {
+      background: white;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    #bioModalClose {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 24px;
+      color: #2e7d32;
+      font-weight: bold;
+      border: none;
+      background: none;
+      cursor: pointer;
+      user-select: none;
+    }
+    #bioModalClose:hover {
+      color: #006400;
+    }
   </style>
 </head>
 <body>
@@ -211,25 +252,25 @@
 
   <nav>
     <a href="index.html" aria-label="Home page">Home</a>
-    <a href="discussion.html" target="_blank" aria-label="Discussion page">Discussion</a>
+    <a href="discussion.html" aria-label="Discussion page">Discussion</a>
 
     <div class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false">
       <button class="dropdown-btn" aria-controls="bios-menu" aria-haspopup="true" aria-expanded="false">
         Bios ▼
       </button>
       <div class="dropdown-content" id="bios-menu" role="menu" aria-label="Family Bios">
-        <a href="bios/grandparent-a.html" target="_blank" role="menuitem">Grandparent A</a>
-        <a href="bios/grandparent-b.html" target="_blank" role="menuitem">Grandparent B</a>
-        <a href="bios/parent-a.html" target="_blank" role="menuitem">Parent A</a>
-        <a href="bios/parent-b.html" target="_blank" role="menuitem">Parent B</a>
-        <a href="bios/sibling1.html" target="_blank" role="menuitem">Sibling 1</a>
-        <a href="bios/sibling2.html" target="_blank" role="menuitem">Sibling 2</a>
-        <a href="bios/spouse2.html" target="_blank" role="menuitem">Spouse 2</a>
-        <a href="bios/child2.html" target="_blank" role="menuitem">Child 2</a>
-        <a href="bios/sibling3.html" target="_blank" role="menuitem">Sibling 3</a>
-        <a href="bios/spouse3.html" target="_blank" role="menuitem">Spouse 3</a>
-        <a href="bios/child3.html" target="_blank" role="menuitem">Child 3</a>
-        <a href="bios/you.html" target="_blank" role="menuitem">You</a>
+        <a href="#" data-bio="bios/grandparent-a.html" role="menuitem">Grandparent A</a>
+        <a href="#" data-bio="bios/grandparent-b.html" role="menuitem">Grandparent B</a>
+        <a href="#" data-bio="bios/parent-a.html" role="menuitem">Parent A</a>
+        <a href="#" data-bio="bios/parent-b.html" role="menuitem">Parent B</a>
+        <a href="#" data-bio="bios/sibling1.html" role="menuitem">Sibling 1</a>
+        <a href="#" data-bio="bios/sibling2.html" role="menuitem">Sibling 2</a>
+        <a href="#" data-bio="bios/spouse2.html" role="menuitem">Spouse 2</a>
+        <a href="#" data-bio="bios/child2.html" role="menuitem">Child 2</a>
+        <a href="#" data-bio="bios/sibling3.html" role="menuitem">Sibling 3</a>
+        <a href="#" data-bio="bios/spouse3.html" role="menuitem">Spouse 3</a>
+        <a href="#" data-bio="bios/child3.html" role="menuitem">Child 3</a>
+        <a href="#" data-bio="bios/you.html" role="menuitem">You</a>
       </div>
     </div>
   </nav>
@@ -261,16 +302,25 @@
 
   <div id="tree" class="tree-container" aria-label="Family tree"></div>
 
+  <!-- Modal for bios -->
+  <div id="bioModal" role="dialog" aria-modal="true" aria-labelledby="bioModalTitle">
+    <div id="bioModalContent">
+      <button id="bioModalClose" aria-label="Close bio modal">&times;</button>
+      <h3 id="bioModalTitle">Loading...</h3>
+      <div id="bioModalBody" style="margin-top:15px; max-height:60vh; overflow-y:auto;">
+        Loading content...
+      </div>
+    </div>
+  </div>
+
   <footer>
     &copy; <span id="year"></span> The Violet Family Tree Project
   </footer>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
-    // Set current year
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Dropdown toggle for mobile and accessibility
     const dropdownBtn = document.querySelector('.dropdown-btn');
     const dropdownContent = document.querySelector('.dropdown-content');
     const dropdown = document.querySelector('.dropdown');
@@ -289,7 +339,62 @@
       dropdown.setAttribute('aria-expanded', false);
     });
 
-    // Family tree data
+    // Modal elements
+    const bioModal = document.getElementById('bioModal');
+    const bioModalTitle = document.getElementById('bioModalTitle');
+    const bioModalBody = document.getElementById('bioModalBody');
+    const bioModalClose = document.getElementById('bioModalClose');
+
+    function openBioModal(url, name) {
+      bioModal.style.display = 'flex';
+      bioModalTitle.textContent = name;
+      bioModalBody.innerHTML = 'Loading content...';
+
+      fetch(url)
+        .then(resp => {
+          if (!resp.ok) throw new Error("Failed to load bio.");
+          return resp.text();
+        })
+        .then(html => {
+          bioModalBody.innerHTML = html;
+        })
+        .catch(err => {
+          bioModalBody.innerHTML = `<p style="color:red;">${err.message}</p>`;
+        });
+    }
+
+    function closeBioModal() {
+      bioModal.style.display = 'none';
+      bioModalBody.innerHTML = '';
+      bioModalTitle.textContent = 'Loading...';
+    }
+
+    bioModalClose.addEventListener('click', closeBioModal);
+
+    // Close modal if click outside content
+    bioModal.addEventListener('click', e => {
+      if (e.target === bioModal) closeBioModal();
+    });
+
+    // Escape key to close modal
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && bioModal.style.display === 'flex') {
+        closeBioModal();
+      }
+    });
+
+    // Attach modal open to dropdown bio links
+    dropdownContent.querySelectorAll('a[data-bio]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        openBioModal(link.dataset.bio, link.textContent);
+        dropdownContent.style.display = 'none';
+        dropdownBtn.setAttribute('aria-expanded', false);
+        dropdown.setAttribute('aria-expanded', false);
+      });
+    });
+
+    // Family tree data (same as previous)
     const treeData = {
       "name": "Grandparents",
       "children": [
@@ -344,12 +449,10 @@
       ]
     };
 
-    // Set dimensions and margins
     const margin = { top: 100, right: 90, bottom: 30, left: 90 },
           width = 1200 - margin.left - margin.right,
           height = 700 - margin.top - margin.bottom;
 
-    // Create SVG container
     const svg = d3.select("#tree").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom);
@@ -357,19 +460,16 @@
     const g = svg.append("g")
       .attr("transform", `translate(${width / 2},${margin.top})`);
 
-    // Create tree layout
     const root = d3.hierarchy(treeData);
     const treeLayout = d3.tree().size([width, height]);
     treeLayout(root);
 
-    // Draw links
     g.selectAll(".link")
       .data(root.links())
       .join("path")
       .attr("class", "link")
       .attr("d", d3.linkVertical().x(d => d.x).y(d => d.y));
 
-    // Draw nodes
     const node = g.selectAll(".node")
       .data(root.descendants())
       .join("g")
@@ -378,7 +478,7 @@
       .style("cursor", "pointer")
       .on("click", d => {
         if (d.data.bio) {
-          window.open(d.data.bio, "_blank");
+          openBioModal(d.data.bio, d.data.name);
         }
       });
 
@@ -395,34 +495,19 @@
       .attr("text-anchor", "middle")
       .text(d => d.data.name);
 
-    // Zoom behavior
-    const zoom = d3.zoom()
-      .scaleExtent([0.5, 2])
-      .on("zoom", event => {
-        g.attr("transform", event.transform);
-      });
-
+    const zoom = d3.zoom().scaleExtent([0.5, 2]).on("zoom", event => g.attr("transform", event.transform));
     svg.call(zoom).call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
 
-    // Zoom buttons
-    document.getElementById("zoomInBtn").addEventListener("click", () => {
-      svg.transition().call(zoom.scaleBy, 1.2);
-    });
-    document.getElementById("zoomOutBtn").addEventListener("click", () => {
-      svg.transition().call(zoom.scaleBy, 0.8);
-    });
-    document.getElementById("resetZoomBtn").addEventListener("click", () => {
-      svg.transition().call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top));
-    });
+    document.getElementById("zoomInBtn").addEventListener("click", () => svg.transition().call(zoom.scaleBy, 1.2));
+    document.getElementById("zoomOutBtn").addEventListener("click", () => svg.transition().call(zoom.scaleBy, 0.8));
+    document.getElementById("resetZoomBtn").addEventListener("click", () => svg.transition().call(zoom.transform, d3.zoomIdentity.translate(width / 2, margin.top)));
 
     // Search functionality
     const searchInput = document.getElementById("searchInput");
     const searchResults = document.getElementById("searchResults");
 
     function clearHighlight() {
-      node.selectAll("text")
-        .attr("fill", "#2e7d32")
-        .attr("font-weight", "normal");
+      node.selectAll("text").attr("fill", "#2e7d32").attr("font-weight", "normal");
     }
 
     function highlightNode(name) {
@@ -437,22 +522,20 @@
       clearHighlight();
       searchResults.innerHTML = "";
       if (!query) return;
-
-      const matches = root.descendants().filter(d =>
-        d.data.name.toLowerCase().includes(query)
-      );
-
+      const matches = root.descendants().filter(d => d.data.name.toLowerCase().includes(query));
       if (matches.length) {
         matches.forEach(d => {
           const a = document.createElement("a");
           a.textContent = d.data.name;
-          a.href = d.data.bio || "#";
-          a.target = "_blank";
+          a.href = "#";
           a.style.display = "block";
           a.style.color = "#0096FF";
           a.style.cursor = "pointer";
           a.style.textDecoration = "underline";
-          a.addEventListener("click", e => e.stopPropagation());
+          a.addEventListener("click", e => {
+            e.preventDefault();
+            openBioModal(d.data.bio, d.data.name);
+          });
           searchResults.appendChild(a);
           highlightNode(d.data.name);
         });
