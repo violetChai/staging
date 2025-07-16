@@ -383,54 +383,59 @@
     });
 
     // Family tree data
-    // Family tree data – Option B (no "Grandparents" wrapper node)
-const treeData = {
-  "name": "Grandparent A",
-  "photo": "grandparent-a.jpg",
-  "bio": "bios/grandparent-a.html",
-  "children": [
-    {
-      "name": "Parent A",
-      "photo": "parent-a.jpg",
-      "bio": "bios/parent-a.html",
+    const treeData = {
+      "name": "Family Tree",
       "children": [
-        { "name": "You", "photo": "you.jpg", "bio": "bios/you.html" },
-        { "name": "Sibling 1", "photo": "sibling1.jpg", "bio": "bios/sibling1.html" },
         {
-          "name": "Sibling 2",
-          "photo": "sibling2.jpg",
-          "bio": "bios/sibling2.html",
+          "name": "Grandparent A",
+          "photo": "grandparent-a.jpg",
+          "bio": "bios/grandparent-a.html",
           "children": [
-            { "name": "Spouse 2", "photo": "spouse2.jpg", "bio": "bios/spouse2.html" },
-            { "name": "Child 2", "photo": "child2.jpg", "bio": "bios/child2.html" }
+            {
+              "name": "Parent A",
+              "photo": "parent-a.jpg",
+              "bio": "bios/parent-a.html",
+              "children": [
+                { "name": "You", "photo": "you.jpg", "bio": "bios/you.html" },
+                { "name": "Sibling 1", "photo": "sibling1.jpg", "bio": "bios/sibling1.html" },
+                {
+                  "name": "Sibling 2",
+                  "photo": "sibling2.jpg",
+                  "bio": "bios/sibling2.html",
+                  "children": [
+                    { "name": "Spouse 2", "photo": "spouse2.jpg", "bio": "bios/spouse2.html" },
+                    { "name": "Child 2", "photo": "child2.jpg", "bio": "bios/child2.html" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Grandparent B",
+          "photo": "grandparent-b.jpg",
+          "bio": "bios/grandparent-b.html",
+          "children": [
+            {
+              "name": "Parent B",
+              "photo": "parent-b.jpg",
+              "bio": "bios/parent-b.html",
+              "children": [
+                {
+                  "name": "Sibling 3",
+                  "photo": "sibling3.jpg",
+                  "bio": "bios/sibling3.html",
+                  "children": [
+                    { "name": "Spouse 3", "photo": "spouse3.jpg", "bio": "bios/spouse3.html" },
+                    { "name": "Child 3", "photo": "child3.jpg", "bio": "bios/child3.html" }
+                  ]
+                }
+              ]
+            }
           ]
         }
       ]
-    },
-    {
-      "name": "Parent B",
-      "photo": "parent-b.jpg",
-      "bio": "bios/parent-b.html",
-      "children": [
-        {
-          "name": "Sibling 3",
-          "photo": "sibling3.jpg",
-          "bio": "bios/sibling3.html",
-          "children": [
-            { "name": "Spouse 3", "photo": "spouse3.jpg", "bio": "bios/spouse3.html" },
-            { "name": "Child 3", "photo": "child3.jpg", "bio": "bios/child3.html" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Grandparent B",
-      "photo": "grandparent-b.jpg",
-      "bio": "bios/grandparent-b.html"
-    }
-  ]
-};
-
+    };
 
     const margin = { top: 100, right: 90, bottom: 30, left: 90 },
           width = 1200 - margin.left - margin.right,
